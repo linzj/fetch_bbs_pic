@@ -1,5 +1,5 @@
 # coding: UTF-8
-import MainPageDelegate
+import PageDelegate
 import MainPage
 from Print import printTest
 
@@ -1073,8 +1073,8 @@ else if (typeof(get_cookie) != 'undefined') _check_hijack();
 
 <iframe style="display: none !important; position: fixed !important; padding: 0px !important; margin: 0px !important; left: 0px !important; top: 0px !important; width: 100% !important; height: 100% !important; z-index: 2147483647 !important; border: none !important; background-color: transparent !important;"></iframe></body></html>"""
 
-class TestMainPageDelegate(MainPageDelegate.MainPageDelegateBase):
-    def do_children(self, topic_urls):
+class TestMainPageDelegate(PageDelegate.PageDelegateBase):
+    def do_children(self, topic_urls, jar):
         for topic_url in topic_urls:
             printTest('topic_url: %s' % topic_url)
     def do_next_pages(self, next_pages):
@@ -1090,7 +1090,7 @@ class TestMainPageDelegate(MainPageDelegate.MainPageDelegateBase):
 
 def main():
     delegate = TestMainPageDelegate()
-    MainPage.do_main_page(MainPageDelegate.HttpRequest('GET', 'douban.com', '/'), None, {'topic' : 'td.td-subject>a.title', 'next_page' : 'span.next>a'}, delegate)
+    MainPage.do_main_page(PageDelegate.HttpRequest('GET', 'douban.com', '/'), None, {'topic' : 'td.td-subject>a.title', 'next_page' : 'span.next>a'}, delegate)
 
 if __name__ == '__main__':
     main()
