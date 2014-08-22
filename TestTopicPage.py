@@ -1,7 +1,7 @@
 # coding: UTF-8
 
 import PageDelegate
-import MainPage
+import PageRoutines
 from Print import printTest
 
 test_html = """<html lang="zh-CN" class="ua-linux ua-webkit"><head>
@@ -1594,8 +1594,8 @@ else if (typeof(get_cookie) != 'undefined') _check_hijack();
 
 <iframe style="display: none !important; position: fixed !important; padding: 0px !important; margin: 0px !important; left: 0px !important; top: 0px !important; width: 100% !important; height: 100% !important; z-index: 2147483647 !important; border: none !important; background-color: transparent !important;"></iframe></body></html>"""
 
-class TestTargetDelegate(PageDelegate.PageDelegateBase):
-    def do_children(self, image_urls):
+class TestTopicDelegate(PageDelegate.PageDelegateBase):
+    def do_topic_page(self, image_urls):
         for image_url in image_urls:
             printTest('image_url: %s' % image_url)
     def do_next_pages(self, next_pages):
@@ -1609,8 +1609,8 @@ class TestTargetDelegate(PageDelegate.PageDelegateBase):
         return test_html
 
 def main():
-    delegate = TestMainPageDelegate()
-    MainPage.do_main_page(PageDelegate.HttpRequest('GET', 'douban.com', '/'), None, {'topic' : '', 'next_page' : ''}, delegate)
+    delegate = TestTopicDelegate()
+    PageRoutines.do_topic_page(PageDelegate.HttpRequest('GET', 'douban.com', '/'), None, {'imgs' : 'div.topic-figure.cc>img', 'next_page' : ''}, delegate)
 
 if __name__ == '__main__':
     main()

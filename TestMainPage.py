@@ -1,6 +1,5 @@
 # coding: UTF-8
-import PageDelegate
-import MainPage
+import PageDelegate, PageRoutines
 from Print import printTest
 
 test_html = """<html lang="zh-CN" class="ua-linux ua-webkit"><head>
@@ -1090,7 +1089,7 @@ class TestMainPageDelegate(PageDelegate.PageDelegateBase):
 
 def main():
     delegate = TestMainPageDelegate()
-    MainPage.do_main_page(PageDelegate.HttpRequest('GET', 'douban.com', '/'), None, {'topic' : 'td.td-subject>a.title', 'next_page' : 'span.next>a'}, delegate)
+    PageRoutines.do_main_page(PageDelegate.HttpRequest('GET', 'douban.com', '/'), None, {'topic' : 'td.td-subject>a.title', 'next_page' : 'span.next>a'}, delegate)
 
 if __name__ == '__main__':
     main()
