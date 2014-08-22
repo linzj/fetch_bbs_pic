@@ -17,7 +17,9 @@ class PageDelegateBase(object):
         pass
     
     def gen_head_from_jar(self, jar):
-        pass
+        _ret_dict_ = {'Accept' : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language' : 'zh-CN,zh;q=0.8,en-US;q=0.6,en;q=0.4,zh-TW;q=0.2'
+        }
     def get_from_url(self, http_request, jar):
         header = self.gen_head_from_jar(jar)
         hc = httplib.HTTPConnection(http_request.host)
