@@ -11,3 +11,6 @@ def printError(s):
 def setDebug(boolean):
     global shouldprintDebug
     shouldprintDebug = True
+
+def printTest(s):
+    print >>sys.stderr,s

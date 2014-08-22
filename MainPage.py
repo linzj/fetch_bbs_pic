@@ -18,8 +18,8 @@ class ListQuerier(object):
 
     def get_list(self, selection_string):
         urls = []
-        for topic in d(selection_string):
-            urls.append(topic.href)
+        for topic in self.d_(selection_string):
+            urls.append(topic.attrib['href'])
         return urls
         
 
@@ -27,7 +27,7 @@ def parse_for_topic(querier, selection_string):
     return querier.get_list(selection_string)
 
 def do_children(children, jar, main_page_delegate):
-    main_page_delegate.do_children(children, jar)
+    main_page_delegate.do_children(children)
 
 def get_next_page(querier, selection_string):
     return querier.get_list(selection_string)
@@ -35,7 +35,7 @@ def get_next_page(querier, selection_string):
 def do_main_page(http_request, jar, selection_strings, main_page_delegate):
     printDebug('do_main_page: %s' % (str(http_request)))
 
-    got_data = do_get_url(http_request, jar)
+    got_data = do_get_url(http_request, jar, main_page_delegate)
     querier = ListQuerier(got_data)
     children = parse_for_topic(querier, selection_strings['topic'])
     do_children(children, jar, main_page_delegate)
