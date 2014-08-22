@@ -1595,7 +1595,7 @@ else if (typeof(get_cookie) != 'undefined') _check_hijack();
 <iframe style="display: none !important; position: fixed !important; padding: 0px !important; margin: 0px !important; left: 0px !important; top: 0px !important; width: 100% !important; height: 100% !important; z-index: 2147483647 !important; border: none !important; background-color: transparent !important;"></iframe></body></html>"""
 
 class TestTopicDelegate(PageDelegate.PageDelegateBase):
-    def do_topic_page(self, image_urls):
+    def do_img(self, image_urls, jar):
         for image_url in image_urls:
             printTest('image_url: %s' % image_url)
     def do_next_pages(self, next_pages):
@@ -1610,7 +1610,7 @@ class TestTopicDelegate(PageDelegate.PageDelegateBase):
 
 def main():
     delegate = TestTopicDelegate()
-    PageRoutines.do_topic_page(PageDelegate.HttpRequest('GET', 'douban.com', '/'), None, {'imgs' : 'div.topic-figure.cc>img', 'next_page' : ''}, delegate)
+    PageRoutines.do_topic_page(PageDelegate.HttpRequest('GET', 'douban.com', '/'), None, {'imgs' : 'div.topic-figure.cc>img', 'next_page' : '', 'url_attrib' : 'src'}, delegate)
 
 if __name__ == '__main__':
     main()

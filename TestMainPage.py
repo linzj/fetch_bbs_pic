@@ -1089,7 +1089,7 @@ class TestMainPageDelegate(PageDelegate.PageDelegateBase):
 
 def main():
     delegate = TestMainPageDelegate()
-    PageRoutines.do_main_page(PageDelegate.HttpRequest('GET', 'douban.com', '/'), None, {'topic' : 'td.td-subject>a.title', 'next_page' : 'span.next>a'}, delegate)
+    PageRoutines.do_main_page(PageDelegate.HttpRequest('GET', 'douban.com', '/'), None, {'topic' : 'td.td-subject>a.title', 'next_page' : 'span.next>a', 'url_attrib' : 'href'}, delegate)
 
 if __name__ == '__main__':
     main()
