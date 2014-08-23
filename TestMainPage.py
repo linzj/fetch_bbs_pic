@@ -1076,12 +1076,11 @@ class TestMainPageDelegate(PageDelegate.PageDelegateBase):
     def do_children(self, topic_urls, jar):
         for topic_url in topic_urls:
             printTest('topic_url: %s' % topic_url)
+
     def do_next_pages(self, next_pages):
         for next_page in next_pages:
             printTest('next_page: %s' % next_page)
 
-    def gen_head_from_jar(self, jar):
-        pass
     def get_from_url(self, http_request, callback):
         printTest('method: %s, host: %s, path: %s' % (http_request.method, http_request.host, http_request.path))
         callback(test_html)
@@ -1089,7 +1088,7 @@ class TestMainPageDelegate(PageDelegate.PageDelegateBase):
 
 def main():
     delegate = TestMainPageDelegate()
-    PageRoutines.do_main_page(PageDelegate.HttpRequest('GET', 'douban.com', '/'), None, {'topic' : 'td.td-subject>a.title', 'next_page' : 'span.next>a', 'url_attrib' : 'href'}, delegate)
+    PageRoutines.do_main_page(PageDelegate.HttpRequest('GET', 'douban.com', '/'), {'topic' : 'td.td-subject>a.title', 'next_page' : 'span.next>a', 'url_attrib' : 'href'}, delegate)
 
 if __name__ == '__main__':
     main()

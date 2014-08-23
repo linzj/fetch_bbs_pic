@@ -30,15 +30,15 @@ def parse_for(querier, selection_string, url_attrib):
 def get_next_page(querier, selection_string):
     return querier.get_list(selection_string, 'href')
 
-def do_page(http_request, jar, selection_strings, page_delegate, is_main_page):
+def do_page(http_request, selection_strings, page_delegate, is_main_page):
     def get_url_callback(got_data):
         querier = ListQuerier(got_data)
         if is_main_page:
             children = parse_for(querier, selection_strings['topic'], selection_strings['url_attrib'])
-            page_delegate.do_children(children, jar)
+            page_delegate.do_children(children, http_request.jar)
         else:
             children = parse_for(querier, selection_strings['imgs'], selection_strings['url_attrib'])
-            page_delegate.do_img(children, jar)
+            page_delegate.do_img(children, http_request.jar)
 
         next_pages = get_next_page(querier, selection_strings['next_page'])
         page_delegate.do_next_pages(next_pages)

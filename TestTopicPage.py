@@ -1610,7 +1610,7 @@ class TestTopicDelegate(PageDelegate.PageDelegateBase):
 
 def main():
     delegate = TestTopicDelegate()
-    PageRoutines.do_topic_page(PageDelegate.HttpRequest('GET', 'douban.com', '/'), None, {'imgs' : 'div.topic-figure.cc>img', 'next_page' : '', 'url_attrib' : 'src'}, delegate)
+    PageRoutines.do_topic_page(PageDelegate.HttpRequest('GET', 'douban.com', '/'), {'imgs' : 'div.topic-figure.cc>img', 'next_page' : '', 'url_attrib' : 'src'}, delegate)
 
 if __name__ == '__main__':
     main()
