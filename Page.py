@@ -35,13 +35,13 @@ def do_page(http_request, selection_strings, page_delegate, is_main_page):
         querier = ListQuerier(got_data)
         if is_main_page:
             children = parse_for(querier, selection_strings['topic'], selection_strings['url_attrib'])
-            page_delegate.do_children(children, http_request.jar)
+            page_delegate.do_children(children, http_request)
         else:
             children = parse_for(querier, selection_strings['imgs'], selection_strings['url_attrib'])
-            page_delegate.do_img(children, http_request.jar)
+            page_delegate.do_img(children, http_request)
 
         next_pages = get_next_page(querier, selection_strings['next_page'])
-        page_delegate.do_next_pages(next_pages)
+        page_delegate.do_next_pages(next_pages, http_request)
         
     do_get_url(http_request, page_delegate, get_url_callback)
 

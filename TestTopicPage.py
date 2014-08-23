@@ -1595,15 +1595,13 @@ else if (typeof(get_cookie) != 'undefined') _check_hijack();
 <iframe style="display: none !important; position: fixed !important; padding: 0px !important; margin: 0px !important; left: 0px !important; top: 0px !important; width: 100% !important; height: 100% !important; z-index: 2147483647 !important; border: none !important; background-color: transparent !important;"></iframe></body></html>"""
 
 class TestTopicDelegate(PageDelegate.PageDelegateBase):
-    def do_img(self, image_urls, jar):
+    def do_img(self, image_urls, http_request):
         for image_url in image_urls:
             printTest('image_url: %s' % image_url)
-    def do_next_pages(self, next_pages):
+    def do_next_pages(self, next_pages, http_request):
         for next_page in next_pages:
             printTest('next_page: %s' % next_page)
 
-    def gen_head_from_jar(self, jar):
-        pass
     def get_from_url(self, http_request, callback):
         printTest('method: %s, host: %s, path: %s' % (http_request.method, http_request.host, http_request.path))
         callback(test_html)

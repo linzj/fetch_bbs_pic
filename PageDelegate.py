@@ -1,5 +1,6 @@
 import HttpDownloader
 from Print import printDebug, printError
+import PageRoutines
 
 
 class HttpRequest(object):
@@ -33,3 +34,16 @@ class PageDelegateBase(object):
     
     def save(self, http_request, data):
         self.callback_(data)
+
+def MainPageDelegate(PageDelegateBase):
+    def __init__(self):
+        super(MainPageDelegate, self).__init__()
+
+    def do_children(self, topic_urls, http_request):
+        for topic_url in topic_urls:
+            delegate = TopicPageDelegate()
+            PageRoutines.do_topic_page(HttpRequest('GET', 'douban.com', '/'), {'imgs' : 'div.topic-figure.cc>img', 'next_page' : '', 'url_attrib' : 'src'}, delegate)
+
+    def do_next_pages(self, next_pages, http_request):
+        for next_page in next_pages:
+            printTest('next_page: %s' % next_page)

@@ -1073,11 +1073,11 @@ else if (typeof(get_cookie) != 'undefined') _check_hijack();
 <iframe style="display: none !important; position: fixed !important; padding: 0px !important; margin: 0px !important; left: 0px !important; top: 0px !important; width: 100% !important; height: 100% !important; z-index: 2147483647 !important; border: none !important; background-color: transparent !important;"></iframe></body></html>"""
 
 class TestMainPageDelegate(PageDelegate.PageDelegateBase):
-    def do_children(self, topic_urls, jar):
+    def do_children(self, topic_urls, http_request):
         for topic_url in topic_urls:
             printTest('topic_url: %s' % topic_url)
 
-    def do_next_pages(self, next_pages):
+    def do_next_pages(self, next_pages, http_request):
         for next_page in next_pages:
             printTest('next_page: %s' % next_page)
 
