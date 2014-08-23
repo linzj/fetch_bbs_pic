@@ -1,4 +1,4 @@
-import HttpDownloader, PageRoutines, ImageSaver
+import HttpFetchProcess, PageRoutines, ImageSaver
 from Print import printDebug, printError
 import urlparse, re
 
@@ -20,7 +20,7 @@ class PageDelegateBase(object):
     
     def get_from_url(self, http_request, callback):
         self.callback_ = callback
-        HttpDownloader.HttpDownloader(self).download(http_request)
+        HttpFetchProcess.newDownloader(self).download(http_request)
 
     def fail_to_get(self, http_request, err):
         printDebug('PageDelegate::fail_to_get: http_request: %s, err: %s' % (str(http_request), err))
@@ -64,7 +64,7 @@ class TopicPageDelegate(PageDelegateBase):
             image_saver = ImageSaver.ImageSaver('./')
             http_request_new = self.construct_request(image_url, http_request)
             printDebug('TopicPageDelegate::do_img: handling img %s, new request: (%s)' % (image_url, http_request_new))
-            HttpDownloader.HttpDownloader(image_saver).download(http_request_new)
+            HttpFetchProcess.newDownloader(image_saver).download(http_request_new)
 
     def do_next_pages(self, next_pages, http_request):
         for next_page in next_pages:
