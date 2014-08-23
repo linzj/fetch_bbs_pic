@@ -9,6 +9,7 @@ inputs:
 """
 
 def do_get_url(http_request, page_delegate, callback):
+    printDebug('Page::do_get_url')
     return page_delegate.get_from_url(http_request, callback)
 
 

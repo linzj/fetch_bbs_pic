@@ -6,8 +6,8 @@ class ImageSaver(object):
         self.target_dir_ = target_dir
         pass
 
-    def fail_to_get(self, http_request):
-        printDebug('fails to get http_request: %s' % str(http_request))
+    def fail_to_get(self, http_request, errstring):
+        printDebug('fails to get http_request: %s, errstring: %s' % (str(http_request), errstring))
 
     def save(self, http_request, data):
         path = http_request.path
@@ -16,4 +16,4 @@ class ImageSaver(object):
             f.write(data)
 
     def _ensureOpen(self, file_name):
-        return open(self.target_dir + file_name, 'wb')
+        return open(self.target_dir_ + file_name, 'wb')

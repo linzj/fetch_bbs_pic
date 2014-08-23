@@ -1082,7 +1082,7 @@ class TestMainPageDelegate(PageDelegate.PageDelegateBase):
             printTest('next_page: %s' % next_page)
 
     def get_from_url(self, http_request, callback):
-        printTest('method: %s, host: %s, path: %s' % (http_request.method, http_request.host, http_request.path))
+        printTest('host: %s, path: %s' % (http_request.host, http_request.path))
         callback(test_html)
 
 

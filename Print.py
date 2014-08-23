@@ -1,5 +1,5 @@
 import sys
-shouldprintDebug = False
+shouldprintDebug = True
 def printDebug(s):
     global shouldprintDebug
     if shouldprintDebug:

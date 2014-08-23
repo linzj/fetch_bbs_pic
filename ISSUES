@@ -1,0 +1,2 @@
+Configuration is not load from someplace but hard coded.
+Downloads need to delegate to different processes.
