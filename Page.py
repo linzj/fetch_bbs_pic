@@ -8,8 +8,8 @@ inputs:
 3. selection strings for page
 """
 
-def do_get_url(http_request, jar, page_delegate):
-    return page_delegate.get_from_url(http_request, jar)
+def do_get_url(http_request, page_delegate, callback):
+    return page_delegate.get_from_url(http_request, callback)
 
 
 class ListQuerier(object):
@@ -31,15 +31,17 @@ def get_next_page(querier, selection_string):
     return querier.get_list(selection_string, 'href')
 
 def do_page(http_request, jar, selection_strings, page_delegate, is_main_page):
-    got_data = do_get_url(http_request, jar, page_delegate)
-    querier = ListQuerier(got_data)
-    if is_main_page:
-        children = parse_for(querier, selection_strings['topic'], selection_strings['url_attrib'])
-        page_delegate.do_children(children, jar)
-    else:
-        children = parse_for(querier, selection_strings['imgs'], selection_strings['url_attrib'])
-        page_delegate.do_img(children, jar)
+    def get_url_callback(got_data):
+        querier = ListQuerier(got_data)
+        if is_main_page:
+            children = parse_for(querier, selection_strings['topic'], selection_strings['url_attrib'])
+            page_delegate.do_children(children, jar)
+        else:
+            children = parse_for(querier, selection_strings['imgs'], selection_strings['url_attrib'])
+            page_delegate.do_img(children, jar)
 
-    next_pages = get_next_page(querier, selection_strings['next_page'])
-    page_delegate.do_next_pages(next_pages)
+        next_pages = get_next_page(querier, selection_strings['next_page'])
+        page_delegate.do_next_pages(next_pages)
+        
+    do_get_url(http_request, page_delegate, get_url_callback)
 

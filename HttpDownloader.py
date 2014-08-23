@@ -1,19 +1,22 @@
-import httplib
+import urllib2
 
 
 class HttpDownloader(object):
     def __init__(file_delegator):
         self.file_delegator_ = file_delegator
 
-    def download(self, http_request, header, body, method):
-        
-        hc = httplib.HTTPConnection(http_request.host)
-        header = self.gen_head_from_jar(jar)
-        hc.request(http_request.method, http_request.path, body, header)
-        response = hc.getresponse()
-        if response.status != 200:
-            printDebug('response.status = %d, returning None' % response.status)
-            file_delegator_.fail_to_get(http_request)
-            return
-        return file_delegator_.save(http_request, response.read())
+    def download(self, http_request):
+        if http_request.jar:
+            opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(http_request.jar))
+        else:
+            opener = urllib2.build_opener()
+        self.set_base_header(opener)
+        try:
+            f = opener.open()
+            return file_delegator_.save(http_request, f.read())
+        except e:
+            file_delegator_.fail_to_get(http_request, str(e))
+
+    def set_base_header(self, opener):
+        opener.addheaders(self.file_delegator_.get_base_header())
 
