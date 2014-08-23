@@ -1,6 +1,6 @@
 import HttpFetchProcess, PageRoutines, ImageSaver
 from Print import printDebug, printError
-import urlparse, re
+import urlparse, re, os.path
 
 
 class HttpRequest(object):
@@ -61,6 +61,10 @@ class TopicPageDelegate(PageDelegateBase):
         
     def do_img(self, image_urls, http_request):
         for image_url in image_urls:
+            path = image_url
+            file_name =  path[path.rindex('/') + 1:]
+            if os.path.isfile(file_name):
+                continue
             image_saver = ImageSaver.ImageSaver('./')
             http_request_new = self.construct_request(image_url, http_request)
             printDebug('TopicPageDelegate::do_img: handling img %s, new request: (%s)' % (image_url, http_request_new))

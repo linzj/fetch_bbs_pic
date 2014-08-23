@@ -10,7 +10,7 @@ def start():
     global pool
     if pool:
        return
-    pool = multiprocessing.Pool(5)
+    pool = multiprocessing.Pool(15)
 
 def next():
     global queue, delegator_map

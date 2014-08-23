@@ -12,6 +12,8 @@ class ImageSaver(object):
     def save(self, http_request, data):
         path = http_request.path
         file_name =  path[path.rindex('/') + 1:]
+        if os.path.isfile(file_name):
+            return
         with self._ensureOpen(file_name) as f:
             f.write(data)
 
