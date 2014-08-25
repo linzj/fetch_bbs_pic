@@ -1,4 +1,5 @@
-import multiprocessing, urllib2, traceback
+import multiprocessing, urllib2, traceback, gzip
+from StringIO import StringIO
 from Print import printDebug
 
 pool = None
@@ -53,6 +54,7 @@ class HttpDownloader(object):
         ('Accept-Language', 'zh-CN,zh;q=0.8,en-US;q=0.6,en;q=0.4,zh-TW;q=0.2'),
         ('User-Agent', 'User-Agent:Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.143 Safari/537.36'),
         ('Referer', 'http://' + url_request.get_host()),
+        ('Accept-encoding', 'gzip'),
         )
         return ret_list
 
@@ -61,6 +63,9 @@ class HttpDownloader(object):
         self.set_base_header_(url_request)
         try:
             f = urllib2.urlopen(url_request)
+            if f.info().get('Content-Encoding') == 'gzip':
+                buf = StringIO(f.read())
+                f = gzip.GzipFile(fileobj=buf)
             return self.file_delegator_.save(f.read())
         except Exception as e:
             traceback.print_exc(e)
