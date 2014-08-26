@@ -47,6 +47,8 @@ def newDownloader(file_delegator):
     return DownladerStub(assign_delegator_(file_delegator))
 
 def worker(stub, url_request):
+    import socket
+    socket.setdefaulttimeout(10)
     printDebug('HttpFetchProcess::worker')
     HttpDownloader(stub).download(url_request)
     return stub
