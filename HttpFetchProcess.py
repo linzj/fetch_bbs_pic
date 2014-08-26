@@ -18,7 +18,14 @@ def next():
     if not queue:
         return False
     next_ = queue.pop(0)
-    stub = next_.get()
+    while True:
+        try:
+            stub = next_.get(10)
+            break
+        except multiprocessing.TimeoutError:
+            printDebug('HttpFetchProcess::next:an asyn result timeout: %s' % str(next_.http_request))
+            continue
+
     file_delegator, http_request = delegator_map[stub.file_delegator_id_]
     del delegator_map[stub.file_delegator_id_]
     if stub.is_save_:
@@ -101,4 +108,5 @@ class DownladerStub(object):
         url_request = urllib2.Request('http://' + http_request.host + '/' + http_request.path)
         http_request.jar.add_cookie_header(url_request)
         queue.append(pool.apply_async(worker, (file_delegator_stub, url_request)))
+        setattr(queue[-1], 'http_request', http_request)
 
