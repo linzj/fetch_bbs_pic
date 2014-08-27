@@ -47,8 +47,6 @@ def newDownloader(file_delegator):
     return DownladerStub(assign_delegator_(file_delegator))
 
 def worker(stub, url_request):
-    import socket
-    socket.setdefaulttimeout(10)
     printDebug('HttpFetchProcess::worker')
     HttpDownloader(stub).download(url_request)
     return stub
@@ -71,7 +69,7 @@ class HttpDownloader(object):
     def download(self, url_request):
         self.set_base_header_(url_request)
         try:
-            f = urllib2.urlopen(url_request)
+            f = urllib2.urlopen(url_request, timeout = 10)
             if f.info().get('Content-Encoding') == 'gzip':
                 buf = StringIO(f.read())
                 f = gzip.GzipFile(fileobj=buf)
