@@ -1,5 +1,6 @@
 from pyquery import PyQuery as pq, PyQuery
 from Print import printDebug, printError
+import random
 
 """
 inputs:
@@ -25,7 +26,9 @@ class ListQuerier(object):
         
 
 def parse_for(querier, selection_string, url_attrib):
-    return querier.get_list(selection_string, url_attrib)
+    _l = querier.get_list(selection_string, url_attrib)
+    random.shuffle(_l)
+    return _l
 
 
 def get_next_page(querier, selection_string):

@@ -16,10 +16,12 @@ class HttpRequest(object):
 class PageDelegateBase(object):
     def __init__(self):
         self.callback_ = None
+        self.http_request_ = None
         pass
     
     def get_from_url(self, http_request, callback):
         self.callback_ = callback
+        self.http_request_ = http_request
         HttpFetchProcess.newDownloader(self).download(http_request)
 
     def fail_to_get(self, http_request, err):
@@ -65,7 +67,7 @@ class TopicPageDelegate(PageDelegateBase):
             file_name =  path[path.rindex('/') + 1:]
             if os.path.isfile(file_name):
                 continue
-            image_saver = ImageSaver.ImageSaver('./')
+            image_saver = ImageSaver.ImageSaver('./', self.http_request_)
             http_request_new = self.construct_request(image_url, http_request)
             printDebug('TopicPageDelegate::do_img: handling img %s, new request: (%s)' % (image_url, http_request_new))
             HttpFetchProcess.newDownloader(image_saver).download(http_request_new)

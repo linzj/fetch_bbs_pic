@@ -12,7 +12,7 @@ def main():
         while HttpFetchProcess.next():
             pass
         printDebug('finished one pass, sleeping...')
-        time.sleep(120)
+        time.sleep(80)
         printDebug('begining next pass')
 
 if __name__ == '__main__':
