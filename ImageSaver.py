@@ -3,6 +3,9 @@ import os.path
 
 log_file = open('downloaded.log', 'a')
 
+def flush_log():
+    log_file.flush()
+
 class ImageSaver(object):
     def __init__(self, target_dir, http_request):
         self.target_dir_ = target_dir
