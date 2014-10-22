@@ -83,7 +83,7 @@ class HttpDownloader(object):
     def download(self, url_request):
         self.set_base_header_(url_request)
         try:
-            f = urllib2.urlopen(url_request, timeout = 10)
+            f = urllib2.urlopen(url_request, timeout = 20)
             if f.info().get('Content-Encoding') == 'gzip':
                 buf = StringIO(f.read())
                 f = gzip.GzipFile(fileobj=buf)
