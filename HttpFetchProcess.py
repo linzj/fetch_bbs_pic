@@ -1,29 +1,36 @@
 import multiprocessing, urllib2, traceback, gzip
 from StringIO import StringIO
 from Print import printDebug
+from Queue import Full
 
-pool = None
-queue = []
+
+started = False
+output_queue = multiprocessing.Queue()
+arg_queue = multiprocessing.Queue()
+requests_count = 0
 delegator_map = {}
 delegator_id = 0
 
 def start():
-    global pool
-    if pool:
+    global started
+    if started:
        return
-    pool = multiprocessing.Pool(15)
+    started = True
+    for i in range(15):
+        p = multiprocessing.Process(target = process_worker, args = (arg_queue, output_queue))
+        p.start()
 
 def next():
-    global queue, delegator_map
-    if not queue:
+    global output_queue, delegator_map, requests_count
+    if not requests_count:
         return False
-    next_ = queue.pop(0)
     while True:
         try:
-            stub = next_.get(300)
+            stub = output_queue.get(block = True, timeout = 30)
+            requests_count -= 1
             break
-        except multiprocessing.TimeoutError:
-            printDebug('HttpFetchProcess::next:an asyn result timeout: %s' % str(next_.http_request))
+        except Full:
+            printDebug('HttpFetchProcess::next: wait for 30 and nothing returns')
             continue
 
     file_delegator, http_request = delegator_map[stub.file_delegator_id_]
@@ -46,10 +53,17 @@ def assign_delegator_(file_delegator):
 def newDownloader(file_delegator):
     return DownladerStub(assign_delegator_(file_delegator))
 
+def process_worker(arg_queue, output_queue):
+    while True:
+        stub, url_request = arg_queue.get()
+
+        output_queue.put(worker(stub, url_request))
+
 def worker(stub, url_request):
     printDebug('HttpFetchProcess::worker')
     HttpDownloader(stub).download(url_request)
     return stub
+
 # copy from HttpDownloader.py
 # make it adapted to multiprocessing
 class HttpDownloader(object):
@@ -102,11 +116,12 @@ class DownladerStub(object):
         self.file_delegator_id_ = file_delegator_id
 
     def download(self, http_request):
-        global pool, queue, delegator_map
+        global pool, delegator_map, requests_count
         file_delegator_stub = FileDelegatorStub(self.file_delegator_id_)
         delegator_map[self.file_delegator_id_].append(http_request)
         url_request = urllib2.Request('http://' + http_request.host + http_request.path)
         http_request.jar.add_cookie_header(url_request)
-        queue.append(pool.apply_async(worker, (file_delegator_stub, url_request)))
-        setattr(queue[-1], 'http_request', http_request)
+
+        arg_queue.put((file_delegator_stub, url_request))
+        requests_count += 1
 
