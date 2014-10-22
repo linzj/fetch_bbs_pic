@@ -8,16 +8,21 @@ def main():
     cj = cookielib.MozillaCookieJar()
     cj.load('./cookies.txt')
     HttpFetchProcess.start()
+    #main_dict = {
+    #    'target' : 'td.td-subject>a.title',
+    #    'next_page' : 'span.next>a',
+    #    'url_attrib' : 'href',
+    #    'sub' : {
+    #        'target' : 'div.topic-figure.cc>img',
+    #        'next_page' : '',
+    #        'url_attrib' : 'src'},
+    #}
     main_dict = {
-        'target' : 'td.td-subject>a.title',
-        'next_page' : 'span.next>a',
-        'url_attrib' : 'href',
-        'sub' : {
-            'target' : 'div.topic-figure.cc>img',
-            'next_page' : '',
-            'url_attrib' : 'src'},
+        'target' : 'div.row>div.text>p>img',
+        'next_page' : 'a.previous-comment-page',
+        'url_attrib' : ['org_src', 'src'],
     }
-    main_request = PageDelegate.HttpRequest('www.douban.com', '/group/', jar = cj)
+    main_request = PageDelegate.HttpRequest('jandan.net', '/ooxx/', jar = cj)
     new_page_requests = []
     count = 0
     while True:

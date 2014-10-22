@@ -18,10 +18,22 @@ class ListQuerier(object):
     def __init__(self, data):
         self.d_ = pq(data)
 
-    def get_list(self, selection_string, url_attrib):
+    def get_list(self, selection_string, url_attribs):
         urls = []
         for topic in self.d_(selection_string):
-            urls.append(topic.attrib[url_attrib])
+            if isinstance(url_attribs, list):
+                for url_attrib in url_attribs:
+                    try:
+                        urls.append(topic.attrib[url_attrib])
+                        break
+                    except:
+                        continue
+            else:
+                try:
+                    urls.append(topic.attrib[url_attribs])
+                except:
+                    pass
+
         return urls
         
 
