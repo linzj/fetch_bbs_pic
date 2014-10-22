@@ -1,4 +1,4 @@
-import HttpFetchProcess, PageRoutines, ImageSaver
+import HttpFetchProcess,  ImageSaver
 from Print import printDebug, printError
 import urlparse, re, os.path
 
@@ -46,12 +46,10 @@ class PageDelegate(PageDelegateBase):
     def __init__(self):
         super(PageDelegate, self).__init__()
 
-    def do_page(self, topic_urls, http_request, sub_dict):
+    def do_page(self, topic_urls, http_request, sub_dict, new_page_requests):
         for topic_url in topic_urls:
-            new_page = PageDelegate()
             http_request_new = self.construct_request(topic_url, http_request)
-            PageRoutines.do_page(http_request_new, sub_dict, new_page)
-
+            new_page_requests.append((http_request_new, sub_dict))
 
     def do_resource(self, resource_urls, http_request):
         for resource_url in resource_urls:
@@ -64,7 +62,6 @@ class PageDelegate(PageDelegateBase):
             printDebug('PageDelegate::do_img: handling img %s, new request: (%s)' % (resource_url, http_request_new))
             HttpFetchProcess.newDownloader(image_saver).download(http_request_new)
 
-    def do_next_pages(self, next_pages, http_request):
-        for next_page in next_pages:
-            printDebug('PageDelegate::next_page: %s' % next_page)
+    def do_next_pages(self, next_page, main_dict, http_request, new_page_requests):
+        new_page_requests.append((self.construct_request(next_page, http_request), main_dict))
 

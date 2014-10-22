@@ -34,7 +34,7 @@ def parse_for(querier, selection_string, url_attrib):
 def get_next_page(querier, selection_string):
     return querier.get_list(selection_string, 'href')
 
-def do_page(http_request, main_dict, page_delegate):
+def do_page(http_request, main_dict, page_delegate, new_page_requests):
     def get_url_callback(got_data):
         querier = ListQuerier(got_data)
         if 'sub' in main_dict:
@@ -42,13 +42,14 @@ def do_page(http_request, main_dict, page_delegate):
             if not isinstance(sub_dict, dict):
                 raise Exception('sub field nees to be a dict')
             children = parse_for(querier, main_dict['target'], main_dict['url_attrib'])
-            page_delegate.do_page(children, http_request, sub_dict)
+            page_delegate.do_page(children, http_request, sub_dict, new_page_requests)
         else:
             children = parse_for(querier, main_dict['target'], main_dict['url_attrib'])
             page_delegate.do_resource(children, http_request)
 
         next_pages = get_next_page(querier, main_dict['next_page'])
-        page_delegate.do_next_pages(next_pages, http_request)
+        if next_pages:
+            page_delegate.do_next_pages(next_pages[0], main_dict, http_request, new_page_requests)
         
     do_get_url(http_request, page_delegate, get_url_callback)
 
