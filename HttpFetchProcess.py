@@ -20,7 +20,7 @@ def next():
     next_ = queue.pop(0)
     while True:
         try:
-            stub = next_.get(10)
+            stub = next_.get(300)
             break
         except multiprocessing.TimeoutError:
             printDebug('HttpFetchProcess::next:an asyn result timeout: %s' % str(next_.http_request))
