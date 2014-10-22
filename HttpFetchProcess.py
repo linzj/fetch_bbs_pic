@@ -105,7 +105,7 @@ class DownladerStub(object):
         global pool, queue, delegator_map
         file_delegator_stub = FileDelegatorStub(self.file_delegator_id_)
         delegator_map[self.file_delegator_id_].append(http_request)
-        url_request = urllib2.Request('http://' + http_request.host + '/' + http_request.path)
+        url_request = urllib2.Request('http://' + http_request.host + http_request.path)
         http_request.jar.add_cookie_header(url_request)
         queue.append(pool.apply_async(worker, (file_delegator_stub, url_request)))
         setattr(queue[-1], 'http_request', http_request)

@@ -42,38 +42,29 @@ class PageDelegateBase(object):
             host_end = url[7:].index('/') + 7
             return HttpRequest(url[7 : host_end], url[host_end:], jar = http_request.jar)
 
-class MainPageDelegate(PageDelegateBase):
+class PageDelegate(PageDelegateBase):
     def __init__(self):
-        super(MainPageDelegate, self).__init__()
+        super(PageDelegate, self).__init__()
 
-    def do_children(self, topic_urls, http_request):
+    def do_page(self, topic_urls, http_request, sub_dict):
         for topic_url in topic_urls:
-            delegate = TopicPageDelegate()
+            new_page = PageDelegate()
             http_request_new = self.construct_request(topic_url, http_request)
-            printDebug('MainPageDelegate::do_children: handling topic: %s, request: (%s)' % (topic_url, http_request_new))
-            PageRoutines.do_topic_page(http_request_new, {'imgs' : 'div.topic-figure.cc>img', 'next_page' : '', 'url_attrib' : 'src'}, delegate)
+            PageRoutines.do_page(http_request_new, sub_dict, new_page)
 
-    def do_next_pages(self, next_pages, http_request):
-        for next_page in next_pages:
-            printDebug('MainPageDelegate::next_page: %s' % next_page)
 
-class TopicPageDelegate(PageDelegateBase):
-    def __init__(self):
-        super(TopicPageDelegate, self).__init__()
-        
-    def do_img(self, image_urls, http_request):
-        for image_url in image_urls:
-            path = image_url
+    def do_resource(self, resource_urls, http_request):
+        for resource_url in resource_urls:
+            path = resource_url
             file_name =  path[path.rindex('/') + 1:]
             if os.path.isfile(file_name):
                 continue
             image_saver = ImageSaver.ImageSaver('./', self.http_request_)
-            http_request_new = self.construct_request(image_url, http_request)
-            printDebug('TopicPageDelegate::do_img: handling img %s, new request: (%s)' % (image_url, http_request_new))
+            http_request_new = self.construct_request(resource_url, http_request)
+            printDebug('PageDelegate::do_img: handling img %s, new request: (%s)' % (resource_url, http_request_new))
             HttpFetchProcess.newDownloader(image_saver).download(http_request_new)
 
     def do_next_pages(self, next_pages, http_request):
         for next_page in next_pages:
-            printDebug('TopicPageDelegate::next_page: %s' % next_page)
-
+            printDebug('PageDelegate::next_page: %s' % next_page)
 
