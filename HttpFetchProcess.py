@@ -1,7 +1,7 @@
 import multiprocessing, urllib2, traceback, gzip
 from StringIO import StringIO
 from Print import printDebug
-from Queue import Full
+from Queue import Empty
 
 
 started = False
@@ -29,7 +29,7 @@ def next():
             stub = output_queue.get(block = True, timeout = 30)
             requests_count -= 1
             break
-        except Full:
+        except Empty:
             printDebug('HttpFetchProcess::next: wait for 30 and nothing returns')
             continue
 
