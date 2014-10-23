@@ -3,6 +3,29 @@ import cookielib, time
 from Print import printDebug
 from ImageSaver import flush_log
 
+
+class SleepForClass(object):
+
+    def __init__(self):
+        self.count_ = 0
+
+    def check(self):
+        if self.count_ >= 100:
+            sleep_if_not_empty()
+
+    def inc_count(self):
+        self.count_ += 1
+
+    def sleep_if_not_empty(self):
+        if self.count_:
+            flush_log()
+            printDebug('finished one pass, sleeping...')
+            time.sleep(80)
+            printDebug('begining next pass')
+            self.count_ = 0
+
+
+
 def main():
     main_page_delegate = PageDelegate.PageDelegate()
     cj = cookielib.MozillaCookieJar()
@@ -24,25 +47,21 @@ def main():
     }
     main_request = PageDelegate.HttpRequest('jandan.net', '/ooxx/', jar = cj)
     new_page_requests = []
-    count = 0
+    sleeper = SleepForClass()
     while True:
         if not new_page_requests:
             request = main_request
             _dict = main_dict
+            sleeper.sleep_if_not_empty()
         else:
             request, _dict = new_page_requests.pop(0)
 
         Page.do_page(request, _dict, main_page_delegate, new_page_requests)
         while HttpFetchProcess.next():
             pass
-        count += 1
-        printDebug('<!------------------------------ count = ' + str(count))
-        if count >= 100:
-            flush_log()
-            printDebug('finished one pass, sleeping...')
-            time.sleep(80)
-            printDebug('begining next pass')
-            count = 0
+        sleeper.inc_count()
+        printDebug('<!------------------------------ count = ' + str(sleeper.count_))
+        sleeper.check()
 
 if __name__ == '__main__':
     main()
