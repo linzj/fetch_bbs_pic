@@ -1,0 +1,7 @@
+{
+    'target' : 'div.row>div.text>p>img',
+    'next_page' : 'a.previous-comment-page',
+    'url_attrib' : ['org_src', 'src'],
+    'host' : 'jandan.net',
+    'path' : '/ooxx',
+}
