@@ -24,10 +24,10 @@ class SleepForClass(object):
             printDebug('begining next pass')
             self.count_ = 0
 
+MAX_PARALLEL_PAGES=10
 
 
 def main():
-    main_page_delegate = PageDelegate.PageDelegate()
     cj = cookielib.MozillaCookieJar()
     cj.load('./cookies.txt')
     HttpFetchProcess.start()
@@ -49,14 +49,20 @@ def main():
     new_page_requests = []
     sleeper = SleepForClass()
     while True:
-        if not new_page_requests:
-            request = main_request
-            _dict = main_dict
-            sleeper.sleep_if_not_empty()
-        else:
-            request, _dict = new_page_requests.pop(0)
 
-        Page.do_page(request, _dict, main_page_delegate, new_page_requests)
+        for i in range(MAX_PARALLEL_PAGES):
+            main_page_delegate = PageDelegate.PageDelegate()
+            if not new_page_requests:
+                if i == 0:
+                    request = main_request
+                    _dict = main_dict
+                    sleeper.sleep_if_not_empty()
+                    Page.do_page(request, _dict, main_page_delegate, new_page_requests)
+                break
+            else:
+                request, _dict = new_page_requests.pop(0)
+                Page.do_page(request, _dict, main_page_delegate, new_page_requests)
+
         while HttpFetchProcess.next():
             pass
         sleeper.inc_count()
