@@ -11,7 +11,7 @@ class SleepForClass(object):
 
     def check(self):
         if self.count_ >= 100:
-            sleep_if_not_empty()
+            self.sleep_if_not_empty()
 
     def inc_count(self):
         self.count_ += 1
