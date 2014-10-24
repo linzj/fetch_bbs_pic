@@ -9,6 +9,41 @@ inputs:
 3. selection strings for page
 """
 
+class PageLimit(object):
+    def __init__(self, limit):
+        self.limit_ = limit
+
+    def dec(self):
+        self.limit_ -= 1
+
+    def is_out(self):
+        return self.limit_  <= 0
+
+class PageRequest(object):
+    def __init__(self, http_request, _dict):
+        self.http_request_ = http_request
+        self.dict_ = _dict
+        self.limit_ = None
+
+    def get_reqeust(self):
+        return self.http_request_
+
+    def get_dict(self):
+        return self.dict_
+
+    def get_limit(self):
+        return self.limit_
+
+    def clone_with(self, new_http_request, _dict = None):
+        if not _dict:
+            _dict = self.dict_
+        new_clone = PageRequest(new_http_request, _dict)
+        new_clone.limit_ = self.limit_
+        return new_clone
+
+    def set_limit(self, limit):
+        self.limit_ = limit
+
 def do_get_url(http_request, page_delegate, callback):
     printDebug('Page::do_get_url')
     return page_delegate.get_from_url(http_request, callback)
@@ -46,22 +81,23 @@ def parse_for(querier, selection_string, url_attrib):
 def get_next_page(querier, selection_string):
     return querier.get_list(selection_string, 'href')
 
-def do_page(http_request, main_dict, page_delegate, new_page_requests):
+def do_page(page_request, page_delegate, new_page_requests):
     def get_url_callback(got_data):
         querier = ListQuerier(got_data)
+        main_dict = page_request.get_dict()
         if 'sub' in main_dict:
             sub_dict = main_dict['sub']
             if not isinstance(sub_dict, dict):
                 raise Exception('sub field nees to be a dict')
             children = parse_for(querier, main_dict['target'], main_dict['url_attrib'])
-            page_delegate.do_page(children, http_request, sub_dict, new_page_requests)
+            page_delegate.do_page(children, page_request, sub_dict, new_page_requests)
         else:
             children = parse_for(querier, main_dict['target'], main_dict['url_attrib'])
-            page_delegate.do_resource(children, http_request)
+            page_delegate.do_resource(children, page_request.get_reqeust())
 
         next_pages = get_next_page(querier, main_dict['next_page'])
         if next_pages:
-            page_delegate.do_next_pages(next_pages[0], main_dict, http_request, new_page_requests)
+            page_delegate.do_next_pages(next_pages[0], page_request, new_page_requests)
         
-    do_get_url(http_request, page_delegate, get_url_callback)
+    do_get_url(page_request.get_reqeust(), page_delegate, get_url_callback)
 

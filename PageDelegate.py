@@ -46,10 +46,10 @@ class PageDelegate(PageDelegateBase):
     def __init__(self):
         super(PageDelegate, self).__init__()
 
-    def do_page(self, topic_urls, http_request, sub_dict, new_page_requests):
+    def do_page(self, topic_urls, page_request, sub_dict, new_page_requests):
         for topic_url in topic_urls:
-            http_request_new = self.construct_request(topic_url, http_request)
-            new_page_requests.append((http_request_new, sub_dict))
+            http_request_new = self.construct_request(topic_url, page_request.get_reqeust())
+            new_page_requests.append(page_request.clone_with(http_request_new, sub_dict))
 
     def do_resource(self, resource_urls, http_request):
         for resource_url in resource_urls:
@@ -62,6 +62,7 @@ class PageDelegate(PageDelegateBase):
             printDebug('PageDelegate::do_img: handling img %s, new request: (%s)' % (resource_url, http_request_new))
             HttpFetchProcess.newDownloader(image_saver).download(http_request_new)
 
-    def do_next_pages(self, next_page, main_dict, http_request, new_page_requests):
-        new_page_requests.append((self.construct_request(next_page, http_request), main_dict))
+    def do_next_pages(self, next_page, page_request, new_page_requests):
+        new_page_request = page_request.clone_with(self.construct_request(next_page, page_request.get_reqeust()))
+        new_page_requests.append(new_page_request)
 

@@ -47,11 +47,16 @@ def main():
         MAX_PARALLEL_PAGES = configure['max_parallel_pages']
     else:
         MAX_PARALLEL_PAGES = 1
+    if 'page_limit' in configure:
+        page_limit_count = Page.PageLimit(configure['page_limit'])
+    else:
+        page_limit_count = 0
     cj = cookielib.MozillaCookieJar()
     cj.load('./cookies.txt')
     HttpFetchProcess.start()
     main_dict = configure
     main_request = PageDelegate.HttpRequest(configure['host'], configure['path'], jar = cj)
+    main_page_request = Page.PageRequest(main_request, main_dict)
     new_page_requests = []
     sleeper = SleepForClass()
     while True:
@@ -59,15 +64,22 @@ def main():
             main_page_delegate = PageDelegate.PageDelegate()
             if not new_page_requests:
                 if i == 0:
-                    request = main_request
-                    _dict = main_dict
+                    page_request = main_page_request
+                    if page_limit_count != 0:
+                        page_request.set_limit(Page.PageLimit(page_limit_count))
                     sleeper.sleep_if_not_empty()
-                    Page.do_page(request, _dict, main_page_delegate, new_page_requests)
+                    Page.do_page(page_request, main_page_delegate, new_page_requests)
                     sleeper.inc_count()
                 break
             else:
-                request, _dict = new_page_requests.pop(0)
-                Page.do_page(request, _dict, main_page_delegate, new_page_requests)
+                page_request = new_page_requests.pop(0)
+                page_limit = page_request.get_limit()
+                if page_limit:
+                    if page_limit.is_out():
+                        new_page_requests = []
+                        break
+                    page_limit.dec()
+                Page.do_page(page_request, main_page_delegate, new_page_requests)
                 sleeper.inc_count()
 
         while HttpFetchProcess.next():
