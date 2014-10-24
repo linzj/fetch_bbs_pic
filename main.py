@@ -48,7 +48,7 @@ def main():
     else:
         MAX_PARALLEL_PAGES = 1
     if 'page_limit' in configure:
-        page_limit_count = Page.PageLimit(configure['page_limit'])
+        page_limit_count = configure['page_limit']
     else:
         page_limit_count = 0
     cj = cookielib.MozillaCookieJar()
