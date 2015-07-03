@@ -90,6 +90,8 @@ def do_page(page_request, page_delegate, new_page_requests):
             if not isinstance(sub_dict, dict):
                 raise Exception('sub field nees to be a dict')
             children = parse_for(querier, main_dict['target'], main_dict['url_attrib'])
+            if 'randomize' in main_dict:
+                children = page_delegate.do_randomize(children, main_dict)
             page_delegate.do_page(children, page_request, sub_dict, new_page_requests)
         else:
             children = parse_for(querier, main_dict['target'], main_dict['url_attrib'])

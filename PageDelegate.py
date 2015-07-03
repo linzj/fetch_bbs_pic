@@ -1,6 +1,7 @@
 import HttpFetchProcess,  ImageSaver
 from Print import printDebug, printError
 import urlparse, re, os.path
+import random
 
 
 class HttpRequest(object):
@@ -65,4 +66,22 @@ class PageDelegate(PageDelegateBase):
     def do_next_pages(self, next_page, page_request, new_page_requests):
         new_page_request = page_request.clone_with(self.construct_request(next_page, page_request.get_reqeust()))
         new_page_requests.append(new_page_request)
+
+    def do_randomize(self, children, _dict):
+        if 'count' not in _dict:
+            _dict['count'] = 10
+            _dict['children'] = set()
+
+        _dict['count'] -= 1
+        childrenSet = set(children)
+        childrenSet -= _dict['children']
+        children = [ e for e in childrenSet ]
+        random.shuffle(children)
+        endLen = min(len(children), 10)
+        children = children[0:endLen]
+        _dict['children'] |= set(children)
+        if _dict['count'] == 0:
+            _dict['count'] = 10
+            _dict['children'] = set()
+        return children
 

@@ -10,5 +10,6 @@
     'host' : 'www.douban.com',
     'path' : '/group/',
     'max_parallel_pages' : 10,
+    'randomize': True,
 }
 
