@@ -46,11 +46,15 @@ class PageDelegateBase(object):
 class PageDelegate(PageDelegateBase):
     def __init__(self):
         super(PageDelegate, self).__init__()
+        self.visited_topic_urls = set()
 
     def do_page(self, topic_urls, page_request, sub_dict, new_page_requests):
         for topic_url in topic_urls:
+            if topic_url in self.visited_topic_urls:
+                continue
             http_request_new = self.construct_request(topic_url, page_request.get_reqeust())
             new_page_requests.append(page_request.clone_with(http_request_new, sub_dict))
+            self.visited_topic_urls.add(topic_url)
 
     def do_resource(self, resource_urls, http_request):
         for resource_url in resource_urls:

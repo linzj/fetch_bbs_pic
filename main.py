@@ -1,5 +1,5 @@
 import Page, PageDelegate, HttpFetchProcess
-import cookielib, time, sys
+import cookielib, time, sys, random
 from Print import printDebug
 from ImageSaver import flush_log
 
@@ -19,8 +19,9 @@ class SleepForClass(object):
     def sleep_if_not_empty(self):
         if self.count_:
             flush_log()
-            printDebug('finished one pass, sleeping...')
-            time.sleep(80)
+            sleepTime = random.randrange(50, 80)
+            printDebug('finished one pass, sleeping for %f...' % sleepTime)
+            time.sleep(sleepTime)
             printDebug('begining next pass')
             self.count_ = 0
 
