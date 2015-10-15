@@ -19,11 +19,16 @@ class SleepForClass(object):
     def sleep_if_not_empty(self):
         if self.count_:
             flush_log()
-            sleepTime = random.randrange(50, 80)
+            sleepTime = random.uniform(80, 100)
             printDebug('finished one pass, sleeping for %f...' % sleepTime)
             time.sleep(sleepTime)
             printDebug('begining next pass')
             self.count_ = 0
+
+    def short_sleep(self):
+        sleepTime = random.uniform(5, 10)
+        printDebug('short sleep for %f.' % sleepTime)
+        time.sleep(sleep)
 
 
 def get_args_read():
