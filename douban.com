@@ -4,7 +4,7 @@
     'page_limit' : 150,
     'url_attrib' : 'href',
     'sub' : {
-        'target' : 'div.topic-figure.cc>img',
+        'target' : 'img',
         'next_page' : '',
         'url_attrib' : 'src'},
     'host' : 'www.douban.com',

@@ -25,12 +25,6 @@ class SleepForClass(object):
             printDebug('begining next pass')
             self.count_ = 0
 
-    def short_sleep(self):
-        sleepTime = random.uniform(5, 10)
-        printDebug('short sleep for %f.' % sleepTime)
-        time.sleep(sleep)
-
-
 def get_args_read():
     if len(sys.argv) != 2:
         printError("need to specify map file")

@@ -16,6 +16,8 @@ class ImageSaver(object):
         printDebug('fails to get http_request: %s, errstring: %s' % (str(http_request), errstring))
 
     def save(self, http_request, data):
+        if len(data) < 1024 * 50:
+            return
         path = http_request.path
         file_name =  path[path.rindex('/') + 1:]
         if os.path.isfile(file_name):
