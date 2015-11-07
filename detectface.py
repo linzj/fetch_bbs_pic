@@ -23,7 +23,7 @@ def draw_rects(img, rects, color):
         cv2.rectangle(img, (x1, y1), (x2, y2), color, 2)
 
 def main():
-    cascade_fn = 'haarcascade_frontalface_default.xml'
+    cascade_fn = 'haarcascade_profileface.xml'
 
     cascade = cv2.CascadeClassifier(cascade_fn)
     if os.path.exists("faces"):
