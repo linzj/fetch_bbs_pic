@@ -23,7 +23,7 @@ def draw_rects(img, rects, color):
         cv2.rectangle(img, (x1, y1), (x2, y2), color, 2)
 
 def main():
-    cascade_fn = 'haarcascade_profileface.xml'
+    cascade_fn = 'haarcascade_frontalface_default.xml'
 
     cascade = cv2.CascadeClassifier(cascade_fn)
     if os.path.exists("faces"):
@@ -36,12 +36,13 @@ def main():
     for f in glob.glob('*.jpg'):
         if not os.path.isfile(f):
             break
-        img = cv2.imread(f, 0)
+        img = cv2.imread(f)
+        #print('detecting %s' % f)
         #cv2.imshow('facedetect', img)
         #cv2.waitKey(-1)
 
-        #gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        gray = cv2.equalizeHist(img)
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        gray = cv2.equalizeHist(gray)
 
         detected = detect(gray, cascade)
         if detected:
