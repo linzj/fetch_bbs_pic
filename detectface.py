@@ -5,7 +5,7 @@ from __future__ import print_function
 
 import numpy as np
 import cv2
-import glob, os.path, shutil, os
+import glob, os.path, shutil, os, sys
 
 help_message = '''
 USAGE: facedetect.py [--cascade <cascade_fn>] [--nested-cascade <cascade_fn>] [<video_source>]
@@ -22,8 +22,8 @@ def draw_rects(img, rects, color):
     for x1, y1, x2, y2 in rects:
         cv2.rectangle(img, (x1, y1), (x2, y2), color, 2)
 
-if __name__ == '__main__':
-    cascade_fn = 'haarcascade_frontalface_alt.xml'
+def main():
+    cascade_fn = 'haarcascade_frontalface_default.xml'
 
     cascade = cv2.CascadeClassifier(cascade_fn)
     if os.path.exists("faces"):
@@ -35,9 +35,10 @@ if __name__ == '__main__':
 
     for f in glob.glob('*.jpg'):
         if not os.path.isfile(f):
-            continue
+            break
         img = cv2.imread(f, 0)
         #cv2.imshow('facedetect', img)
+        #cv2.waitKey(-1)
 
         #gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         gray = cv2.equalizeHist(img)
@@ -47,3 +48,5 @@ if __name__ == '__main__':
             print("%s contains face" % (f))
             shutil.move(f, os.path.join("faces", f))
 
+if __name__ == '__main__':
+    main()
