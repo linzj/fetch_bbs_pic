@@ -29,7 +29,7 @@ if __name__ == '__main__':
     if os.path.exists("faces"):
         if not os.path.isdir("faces"):
             shutil.rmtree("faces")
-        os.mkdir("faces")
+            os.mkdir("faces")
     else:
         os.mkdir("faces")
 
