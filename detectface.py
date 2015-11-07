@@ -29,10 +29,10 @@ def main():
             os.mkdir("faces")
     else:
         os.mkdir("faces")
-    hog()
+    fd()
 
 def fd():
-    cascade_fn = 'lbpcascade_frontalface.xml'
+    cascade_fn = 'haarcascade_eye_tree_eyeglasses.xml'
 
     cascade = cv2.CascadeClassifier(cascade_fn)
     for f in glob.glob('*.jpg'):
