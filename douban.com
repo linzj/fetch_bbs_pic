@@ -4,7 +4,7 @@
     'page_limit' : 150,
     'url_attrib' : 'href',
     'sub' : {
-        'target' : 'img',
+        'target' : '[src]',
         'next_page' : '',
         'url_attrib' : 'src'},
     'host' : 'www.douban.com',
