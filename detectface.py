@@ -24,21 +24,21 @@ def draw_rects(img, rects, color):
     for x1, y1, x2, y2 in rects:
         cv2.rectangle(img, (x1, y1), (x2, y2), color, 2)
 
-def main(faceset):
+def main(facemap):
     if os.path.exists("faces"):
         if not os.path.isdir("faces"):
             shutil.rmtree("faces")
             os.mkdir("faces")
     else:
         os.mkdir("faces")
-    fd(faceset)
+    fd(facemap)
 
-def fd(faceset):
+def fd(facemap):
     cascade_fn = 'haarcascade_eye_tree_eyeglasses.xml'
 
     cascade = cv2.CascadeClassifier(cascade_fn)
     for f in glob.glob('*.jpg'):
-        if f in faceset:
+        if f in facemap:
             continue
         if not os.path.isfile(f):
             continue
@@ -54,14 +54,17 @@ def fd(faceset):
         if detected:
             print("%s contains face" % (f))
             shutil.move(f, os.path.join("faces", f))
-            faceset.add(f)
+            facemap[f] = True
+        else:
+            facemap[f] = False
 
-def hog(faceset):
+
+def hog(facemap):
     hog = cv2.HOGDescriptor()
     hog.setSVMDetector( cv2.HOGDescriptor_getDefaultPeopleDetector() )
 
     for f in glob.glob('*.jpg'):
-        if f in faceset:
+        if f in facemap:
             continue
         try:
             img = cv2.imread(f)
@@ -77,19 +80,19 @@ def hog(faceset):
         if len(found) != 0:
             print("%s contains face" % (f))
             shutil.copy(f, os.path.join("faces", f))
-            faceset.add(f)
+            facemap.add(f)
 
 
 if __name__ == '__main__':
-    faceset = None
+    facemap = None
     try:
-        if os.path.isfile('faceset'):
-            with open('faceset', 'rb') as f:
-                faceset = pickle.load(f)
+        if os.path.isfile('facemap'):
+            with open('facemap', 'rb') as f:
+                facemap = pickle.load(f)
     except Exception as e:
         pass
-    if not faceset:
-        faceset = set()
-    main(faceset)
-    with open('faceset', 'wb') as f:
-        pickle.dump(faceset, f)
+    if not facemap:
+        facemap = dict()
+    main(facemap)
+    with open('facemap', 'wb') as f:
+        pickle.dump(facemap, f)
