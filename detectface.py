@@ -6,6 +6,8 @@ from __future__ import print_function
 import numpy as np
 import cv2
 import glob, os.path, shutil, os, sys
+import pickle
+import os.path
 
 help_message = '''
 USAGE: facedetect.py [--cascade <cascade_fn>] [--nested-cascade <cascade_fn>] [<video_source>]
@@ -22,22 +24,24 @@ def draw_rects(img, rects, color):
     for x1, y1, x2, y2 in rects:
         cv2.rectangle(img, (x1, y1), (x2, y2), color, 2)
 
-def main():
+def main(faceset):
     if os.path.exists("faces"):
         if not os.path.isdir("faces"):
             shutil.rmtree("faces")
             os.mkdir("faces")
     else:
         os.mkdir("faces")
-    fd()
+    fd(faceset)
 
-def fd():
+def fd(faceset):
     cascade_fn = 'haarcascade_eye_tree_eyeglasses.xml'
 
     cascade = cv2.CascadeClassifier(cascade_fn)
     for f in glob.glob('*.jpg'):
+        if f in faceset:
+            continue
         if not os.path.isfile(f):
-            break
+            continue
         img = cv2.imread(f)
         #print('detecting %s' % f)
         #cv2.imshow('facedetect', img)
@@ -50,11 +54,15 @@ def fd():
         if detected:
             print("%s contains face" % (f))
             shutil.move(f, os.path.join("faces", f))
-def hog():
+            faceset.add(f)
+
+def hog(faceset):
     hog = cv2.HOGDescriptor()
     hog.setSVMDetector( cv2.HOGDescriptor_getDefaultPeopleDetector() )
 
     for f in glob.glob('*.jpg'):
+        if f in faceset:
+            continue
         try:
             img = cv2.imread(f)
             if img is None:
@@ -68,8 +76,20 @@ def hog():
         found, w = hog.detectMultiScale(img, winStride=(8,8), padding=(32,32), scale=1.05)
         if len(found) != 0:
             print("%s contains face" % (f))
-            shutil.move(f, os.path.join("faces", f))
+            shutil.copy(f, os.path.join("faces", f))
+            faceset.add(f)
 
 
 if __name__ == '__main__':
-    main()
+    faceset = None
+    try:
+        if os.path.isfile('faceset'):
+            with open('faceset', 'rb') as f:
+                faceset = pickle.load(f)
+    except Exception as e:
+        pass
+    if not faceset:
+        faceset = set()
+    main(faceset)
+    with open('faceset', 'wb') as f:
+        pickle.dump(faceset, f)
