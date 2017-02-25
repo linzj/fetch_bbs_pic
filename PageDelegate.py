@@ -32,6 +32,8 @@ class PageDelegateBase(object):
         self.callback_(data)
 
     def construct_request(self, url, http_request):
+        if url.startswith('//'):
+            url = 'http:' + url
         if url.startswith('/'):
             return HttpRequest(http_request.host, url, jar = http_request.jar)
         elif not re.match('^\w+:\/\/', url):
