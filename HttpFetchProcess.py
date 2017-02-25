@@ -1,8 +1,8 @@
 import multiprocessing, urllib2, traceback, gzip
+import DNSResolver
 from StringIO import StringIO
 from Print import printDebug
 from Queue import Empty
-
 
 started = False
 output_queue = multiprocessing.Queue()
@@ -10,6 +10,7 @@ arg_queue = multiprocessing.Queue()
 requests_count = 0
 delegator_map = {}
 delegator_id = 0
+dnsResolver = DNSResolver.DNSResolver()
 
 def start():
     global started
@@ -76,6 +77,7 @@ class HttpDownloader(object):
         ('User-Agent', 'User-Agent:Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.143 Safari/537.36'),
         ('Referer', 'http://' + url_request.get_host()),
         ('Accept-encoding', 'gzip'),
+        ('Host', url_request.lzjhost_),
         )
         return ret_list
 
@@ -119,8 +121,13 @@ class DownladerStub(object):
         global pool, delegator_map, requests_count
         file_delegator_stub = FileDelegatorStub(self.file_delegator_id_)
         delegator_map[self.file_delegator_id_].append(http_request)
-        url_request = urllib2.Request('http://' + http_request.host + http_request.path)
+        host = http_request.host 
+        ip = dnsResolver.resolve(http_request.host)
+        if ip:
+            host = ip
+        url_request = urllib2.Request('http://' + host + http_request.path)
         http_request.jar.add_cookie_header(url_request)
+        setattr(url_request, 'lzjhost_', http_request.host)
 
         arg_queue.put((file_delegator_stub, url_request))
         requests_count += 1

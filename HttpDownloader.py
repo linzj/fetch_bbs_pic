@@ -1,6 +1,5 @@
 import urllib2, traceback
 
-
 class HttpDownloader(object):
     def __init__(self, file_delegator):
         self.file_delegator_ = file_delegator
@@ -21,7 +20,15 @@ class HttpDownloader(object):
             opener = urllib2.build_opener()
         self.set_base_header_(opener, http_request)
         try:
-            f = opener.open('http://' + http_request.host + '/' + http_request.path)
+            host = http_request.host 
+            ip = dnsResolver.resolve(http_request.host)
+            if ip:
+                host = ip
+                printDebug('resovled host: ' + http_request.host + ';ip: ' + ip)
+            else:
+                printDebug('fails to resovled host: ' + http_request.host + ';ip: ' + ip)
+
+            f = opener.open('http://' + host + '/' + http_request.path)
             return self.file_delegator_.save(http_request, f.read())
         except Exception as e:
             traceback.print_exc(e)
